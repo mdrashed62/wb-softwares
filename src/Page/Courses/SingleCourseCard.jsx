@@ -1,8 +1,10 @@
 
 
 const SingleCourseCard = ({course}) => {
-    const {course_name, photo, trainer_data, regular_price} = course;
+    const {course_name, photo, trainer_data, regular_price, discount_price} = course;
     const trainerName = trainer_data?.name;
+
+    const percentageOfDiscount = ((regular_price - discount_price) / regular_price) * 100;
 
     return (
         <div className="m-mt_16px">
@@ -49,10 +51,10 @@ const SingleCourseCard = ({course}) => {
                   {regular_price}
                   </span>
                   <span className="text-green-600 text-md font-bold ml-2">
-                    -70% (calculate from regular-discount price)
+                   -{percentageOfDiscount.toFixed(0)}%
                   </span>
                   <span className="text-black text-lg font-bold ml-2">
-                    Tk 240( discount price from Api)
+                    {discount_price}
                   </span>
                 </div>
                 {/* <span className="text-green-600 text-sm">Earn Tk 48</span> */}
