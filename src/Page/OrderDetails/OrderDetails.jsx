@@ -1,8 +1,15 @@
+import { useEffect, useState } from "react";
 import TrackOrder from "./TrackOrder";
 
 
 const OrderDetails = () => {
-
+   const [purchasedCourses, setPurchasedCourses] = useState([]);
+    useEffect(() => {
+        fetch("https://medical-camp-management-server-a12.vercel.app/addedCamps")
+          .then((res) => res.json())
+          .then((data) => setPurchasedCourses(data))
+          .catch((error) => console.error("Error fetching camps:", error));
+      }, []);
 
     return (
         

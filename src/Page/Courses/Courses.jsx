@@ -1,15 +1,20 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SingleCourseCard from "./SingleCourseCard";
 
 const Courses = () => {
   const [coursesData, setCoursesData] = useState([]);
 
   useEffect(() => {
-    fetch("https://itder.com/api/get-course-list")
-      .then((res) => res.json())
-      .then((data) => setCoursesData(data.courseData))
-      .catch((error) => console.error("Error fetching camps:", error));
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch("https://itder.com/api/get-course-list");
+        const data = await response.json();
+        setCoursesData(data.courseData);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+    fetchCourses();
   }, []);
 
   return (
