@@ -59,8 +59,8 @@ const Cart = () => {
                       <div className="flex flex-col text-center justify-center items-center py-2  w-[80%]">
                         <div className="mask">
                           <img
-                            className="h-[40px] w-[40px]"
-                            src={cartCourse?.photo}
+                            className="h-[50px] w-[50px]"
+                            src={cartCourse?.photo} 
                             alt="Course"
                           />
                         </div>

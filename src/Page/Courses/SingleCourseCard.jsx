@@ -4,8 +4,7 @@ import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const SingleCourseCard = ({ course }) => {
-  const { course_name, photo, trainer_data, regular_price, discount_price } =
-    course;
+  const { course_name, photo, trainer_data, regular_price, discount_price } = course;
   const trainerName = trainer_data?.name;
   const percentageOfDiscount =
     ((regular_price - discount_price) / regular_price) * 100;
