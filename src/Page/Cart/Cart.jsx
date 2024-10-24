@@ -1,5 +1,5 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { useContext} from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { OrderContext } from "../../ContextAPIs/OrderProvider";
@@ -10,12 +10,14 @@ const Cart = () => {
     handleIncreaseQuantity,
     quantity,
     cartCourse,
-    setCartCourse, 
+    setCartCourse,
     setQuantity,
   } = useContext(OrderContext);
 
-  const totalPrice = cartCourse?.discount_price ? cartCourse.discount_price * quantity : 0;
-
+  const totalPrice = cartCourse?.discount_price
+    ? cartCourse.discount_price * quantity
+    : 0;
+  localStorage.setItem("totalPrice", totalPrice.toString());
   return (
     <div className="m-mt_16px">
       <h1 className="text-sm text-start md:text-text_xl lg:py-0 font-bold">
@@ -58,11 +60,15 @@ const Cart = () => {
                       </div>
                       <div className="flex flex-col text-center justify-center items-center py-2  w-[80%]">
                         <div className="mask">
-                          <img
-                            className="h-[50px] w-[50px]"
-                            src={cartCourse?.photo} 
-                            alt="Course"
-                          />
+                          {cartCourse?.photo ? (
+                            <img
+                              className="h-[50px] w-[50px]"
+                              src={cartCourse.photo}
+                              alt="Course"
+                            />
+                          ) : (
+                            <span className="h-[50px] w-[50px] flex items-center justify-center text-gray-500"></span>
+                          )}
                         </div>
                         <p className="text-[14.4px] px-[7px] text-center flex ">
                           {cartCourse?.course_name}{" "}
@@ -104,7 +110,9 @@ const Cart = () => {
                   </td>
                   <td>
                     <p className="text-[14.4px] font-bold p-[7px] text-black text-center">
-                    {cartCourse?.discount_price && quantity ? cartCourse.discount_price * quantity : 0}
+                      {cartCourse?.discount_price && quantity
+                        ? cartCourse.discount_price * quantity
+                        : 0}
                     </p>
                   </td>
                 </tr>
@@ -123,7 +131,7 @@ const Cart = () => {
 
               <Link
                 to={`/checkout`}
-                state={{ totalPrice, cartCourse, quantity}}
+                state={{ totalPrice, cartCourse, quantity }}
                 className="font-medium text-black mb-2 border-2 hover:bg-[#D2C5A2] duration-300 py-2 px-4  block text-center mx-auto w-full"
               >
                 PROCEED TO CHECKOUT

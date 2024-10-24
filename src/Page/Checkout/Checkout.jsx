@@ -1,28 +1,19 @@
-import { useContext } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { useLocation } from "react-router-dom";
-import { OrderContext } from "../../ContextAPIs/OrderProvider";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 const Checkout = () => {
   const location = useLocation();
   const { totalPrice, cartCourse, quantity } = location.state || {};
-//   const navigate = useNavigate();
-
-  const {
-    handleRemoveFromCart,
-    handleIncreaseQuantity,
-    setCartCourse,
-    setQuantity,
-  } = useContext(OrderContext);
+  //   const navigate = useNavigate();
 
   console.log("cartCourse", cartCourse);
 
   const handleSubmitCourse = (e) => {
     e.preventDefault();
-   
+
     const form = e.target;
-    
+
     const formData = new FormData();
     const name = form.fullName.value;
     const formNo = form.formNo.value;
@@ -41,7 +32,7 @@ const Checkout = () => {
     const local_guardian_phone_no = form.guardianMobileNo.value;
     const date_of_birth = form.dob.value;
     const blood_group = form.bloodGroup.value;
-    
+
     formData.append("course_fee", cartCourse.regular_price);
     formData.append("course_id", cartCourse.id);
     formData.append("course_qty", quantity);
@@ -65,34 +56,74 @@ const Checkout = () => {
     formData.append("local_guardian_phone_no", local_guardian_phone_no);
     formData.append("date_of_birth", date_of_birth);
     formData.append("blood_group", blood_group);
-    
-    console.log('check')
-    localStorage.setItem('phone_no', phone_no);
-    localStorage.setItem('form_no', formNo);
+
+    console.log("check");
+    localStorage.setItem("phone_no", phone_no);
+    localStorage.setItem("form_no", formNo);
+
+    localStorage.setItem(
+      "formData",
+      JSON.stringify({
+        name,
+        formNo,
+        father_name,
+        father_phone_no,
+        school_collage_name,
+        job_title,
+        email,
+        gender,
+        present_address,
+        permanent_address,
+        nid_no,
+        phone_no,
+        local_guardian_name,
+        local_guardian_phone_no,
+        date_of_birth,
+        blood_group,
+        photo,
+        totalPrice,
+      })
+    );
     // navigate('/order-details',  { state: { formData: formData}} );
 
-  
     fetch("https://itder.com/api/course-purchase", {
       method: "POST",
       body: formData,
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
       .then((data) => {
+        const formNo = data.coursePurchaseData.form_no;
+        localStorage.setItem("form_no", formNo);
         if (data) {
           toast.success("Course Submitted", {
             position: "top-right",
-            autoClose: 5000,
+            autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             theme: "light",
-            transition: Bounce,
           });
         }
+      })
+      .catch((error) => {
+        console.error("Fetch error:", error);
+        toast.error("Error submitting course. Please try again.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        });
       });
   };
-
 
   return (
     <div className="  mt-5 border mx-2">
@@ -152,7 +183,7 @@ const Checkout = () => {
                 htmlFor="parentNumber"
                 className="block font-semibold text-base mb-2"
               >
-                Fathers Mobile Number:
+                Father/Mother Mobile Number:
               </label>
               <input
                 type="number"
@@ -350,22 +381,22 @@ const Checkout = () => {
                 className="w-full border border-gray-300 rounded-md p-2"
               />
             </div>
-            
           </div>
           <div>
-              <label htmlFor="imageUpload" className="block font-semibold text-base mb-2">
-                Upload Image:
-              </label>
-              <input
-                className="w-full border border-gray-300 rounded-md p-2"
-                type="file"
-                id="imageUpload"
-                name="imageUpload"
-                accept=".jpg,.jpeg,.png,.gif,.svg"
-              />
-              {/* <input type="file" accept=".jpg,.jpeg,.png,.gif,.svg" /> */}
-
-            </div>
+            <label
+              htmlFor="imageUpload"
+              className="block font-semibold text-base mb-2"
+            >
+              Upload Image:
+            </label>
+            <input
+              className="w-full border border-gray-300 rounded-md p-2"
+              type="file"
+              id="imageUpload"
+              name="imageUpload"
+              accept=".jpg,.jpeg,.png,.gif,.svg"
+            />
+          </div>
         </div>
 
         <div className="m-mt_16px">
@@ -395,22 +426,19 @@ const Checkout = () => {
                       <td>
                         <div className="flex items-center justify-center ">
                           <div className="w-[20%] text-center flex items-center justify-center ">
-                            <RiDeleteBin5Line
-                              onClick={() => {
-                                localStorage.clear();
-                                setCartCourse({});
-                                setQuantity(0);
-                              }}
-                              className="text-xl hover:text-footer_color cursor-pointer"
-                            />
+                            <RiDeleteBin5Line className="text-xl hover:text-footer_color cursor-pointer" />
                           </div>
                           <div className="flex flex-col text-center justify-center items-center py-2  w-[80%]">
                             <div className="mask">
-                              <img
-                                className="h-[50px] w-[50px]"
-                                src={cartCourse?.photo}
-                                alt="Course"
-                              />
+                              {cartCourse?.photo ? (
+                                <img
+                                  className="h-[50px] w-[50px]"
+                                  src={cartCourse.photo}
+                                  alt="Course"
+                                />
+                              ) : (
+                                <span className="h-[50px] w-[50px] flex items-center justify-center text-gray-500"></span>
+                              )}
                             </div>
                             <p className="text-[14.4px] px-[7px] text-center flex ">
                               {cartCourse?.course_name}
@@ -427,7 +455,7 @@ const Checkout = () => {
                         <div className="flex justify-center">
                           <div className="border">
                             <button
-                              onClick={() => handleRemoveFromCart(cartCourse)}
+                              disabled
                               className="px-4 w-[30px] font-bold font_standard my-1.5"
                             >
                               -
@@ -442,7 +470,7 @@ const Checkout = () => {
                           </div>
                           <div className="border">
                             <button
-                              onClick={() => handleIncreaseQuantity(cartCourse)}
+                              disabled
                               className="px-4 w-[30px] font-bold font_standard my-1.5"
                             >
                               +
@@ -471,7 +499,10 @@ const Checkout = () => {
                     <p className="text-black font-bold">{totalPrice}</p>
                   </div>
 
-                  <button type="submit" className="font-medium text-black mb-2 border-2 hover:bg-[#57544d] duration-300 py-2 px-4  block text-center mx-auto w-full">
+                  <button
+                    type="submit"
+                    className="font-medium text-black mb-2 border-2 hover:bg-[#57544d] duration-300 py-2 px-4  block text-center mx-auto w-full"
+                  >
                     Submit
                   </button>
                   <ToastContainer />

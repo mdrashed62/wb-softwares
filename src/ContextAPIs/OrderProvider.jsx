@@ -1,5 +1,7 @@
-import { createContext, useEffect, useRef, useState } from "react";
-import { Bounce, toast } from "react-toastify";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { SnackbarContext } from "./SnackbarProvider";
 
 export const OrderContext = createContext(null);
 
@@ -9,6 +11,7 @@ const OrderProvider = ({ children }) => {
   const sidebarRef = useRef(null);
   const [quantity, setQuantity] = useState(0);
   const [cartCourse, setCartCourse] = useState({});
+  const showSnackbar = useContext(SnackbarContext);
 
   const getCourseFromLocalStorage = () => {
     const storedCourse = localStorage.getItem("course");
@@ -25,28 +28,8 @@ const OrderProvider = ({ children }) => {
       const courseWithQuantity = { ...course, quantity: 1 };
       localStorage.setItem("course", JSON.stringify(courseWithQuantity));
       setQuantity(courseWithQuantity.quantity);
-      setCartCourse(courseWithQuantity); 
-      toast.success("Course Added to Cart", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
-    } else {
-      toast.info("Course already in the cart. Use '+' to increase quantity.", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
+      setCartCourse(courseWithQuantity);
+      showSnackbar("Course Added to Cart!", "success");
     }
   };
 
@@ -60,17 +43,7 @@ const OrderProvider = ({ children }) => {
       };
       localStorage.setItem("course", JSON.stringify(updatedCourse));
       setQuantity(updatedCourse.quantity);
-      setCartCourse(updatedCourse); 
-      toast.info("Course quantity increased", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
+      setCartCourse(updatedCourse);
     }
   };
 
@@ -85,20 +58,9 @@ const OrderProvider = ({ children }) => {
       localStorage.setItem("course", JSON.stringify(updatedCourse));
       setQuantity(updatedCourse.quantity);
       setCartCourse(updatedCourse);
-      toast.info("Course quantity reduced", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
     }
   };
 
-  
   useEffect(() => {
     const storedCourse = getCourseFromLocalStorage();
     if (storedCourse) {
@@ -113,7 +75,7 @@ const OrderProvider = ({ children }) => {
     open,
     setOpen,
     sidebarRef,
-    handleAddToCart, 
+    handleAddToCart,
     handleIncreaseQuantity,
     handleRemoveFromCart,
     quantity,

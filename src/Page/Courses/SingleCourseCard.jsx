@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { OrderContext } from "../../ContextAPIs/OrderProvider";
-import { ToastContainer} from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const SingleCourseCard = ({ course }) => {
@@ -11,15 +11,15 @@ const SingleCourseCard = ({ course }) => {
   const { handleAddToCart, quantity } = useContext(OrderContext);
 
   return (
-    <div className="mt-4">
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="mt-4 flex flex-col min-h-screen mb-4">
+      <div className="bg-white shadow-lg rounded-lg overflow-hidden flex flex-col flex-grow">
         <div className="relative">
-          <img src={photo} alt={course_name} className="w-full" />
+          <img src={photo} alt={course_name} className=" w-full h-full lg:w-[400px] lg:h-[400px]" />
           <div className="absolute top-0 left-0 p-2">
             <h3 className="text-white text-xl font-bold">Data Entry</h3>
           </div>
         </div>
-        <div className="p-4">
+        <div className="p-4 flex flex-col flex-grow">
           <h2 className="text-gray-800 text-lg font-semibold mb-2">
             {course_name}
           </h2>
@@ -46,7 +46,7 @@ const SingleCourseCard = ({ course }) => {
               </span>
             </div>
           </div>
-          <div className="mt-4 flex gap-2">
+          <div className="mt-4 flex-grow flex items-end">
             <button
               disabled={quantity > 0}
               onClick={() => handleAddToCart(course)}
@@ -56,7 +56,7 @@ const SingleCourseCard = ({ course }) => {
                   : "bg-blue-500 hover:bg-blue-700 text-white"
               } py-2 px-4 rounded w-full font-bold text-md`}
             >
-              {quantity > 0 ? "Added to Cart" : "Add To Cart"}
+              {quantity > 0 ? "Add to Cart" : "Add To Cart"}
             </button>
           </div>
         </div>
